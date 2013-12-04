@@ -341,7 +341,7 @@ static inline void RENAME(vo_draw_alpha_rgb32)(int w,int h, unsigned char* src, 
 #endif /* HAVE_MMX */
     for(y=0;y<h;y++){
         register int x;
-#if ARCH_X86 && (!ARCH_X86_64 || HAVE_MMX)
+#if ARCH_X86 && (!ARCH_X86_64 || HAVE_MMX) && !defined(__ILP32__)
 #if HAVE_MMX
 #if HAVE_AMD3DNOW
     __asm__ volatile(

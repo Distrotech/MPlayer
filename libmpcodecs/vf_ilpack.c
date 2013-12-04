@@ -116,7 +116,7 @@ static void pack_li_0_MMX(unsigned char *dst, unsigned char *y,
 {
     __asm__ volatile (""
         "push %%"REG_BP" \n\t"
-#if ARCH_X86_64
+#if ARCH_X86_64 || defined(__ILP32__)
         "mov %6, %%"REG_BP" \n\t"
 #else
         "movl 4(%%"REG_d"), %%"REG_BP" \n\t"
@@ -209,7 +209,7 @@ static void pack_li_0_MMX(unsigned char *dst, unsigned char *y,
         "pop %%"REG_BP" \n\t"
         :
         : "S" (y), "D" (dst), "a" (u), "b" (v), "c" (w/16),
-#if ARCH_X86_64
+#if ARCH_X86_64 || defined(__ILP32__)
         "d" ((x86_reg)us), "r" ((x86_reg)vs)
 #else
         "d" (&us)
@@ -224,7 +224,7 @@ static void pack_li_1_MMX(unsigned char *dst, unsigned char *y,
 {
     __asm__ volatile (""
         "push %%"REG_BP" \n\t"
-#if ARCH_X86_64
+#if ARCH_X86_64 || defined(__ILP32__)
         "mov %6, %%"REG_BP" \n\t"
 #else
         "movl 4(%%"REG_d"), %%"REG_BP" \n\t"

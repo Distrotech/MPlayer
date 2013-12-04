@@ -440,7 +440,7 @@ block_metrics_faster_c(unsigned char *a, unsigned char *b, int as, int bs,
             "paddusw %%mm2, %%mm7\n\t"                                             \
             "paddusw %%mm1, %%mm7\n\t"                                             \
             : "=r" (a), "=r" (b)                                             \
-            : "r"((x86_reg)as), "r"((x86_reg)bs), "m" (ones), "0"(a), "1"(b), "X"(*a), "X"(*b) \
+            : "r"((x86_ptr)as), "r"((x86_ptr)bs), "m" (ones), "0"(a), "1"(b), "X"(*a), "X"(*b) \
             );                                                                     \
     } while (--lines);
 
@@ -482,8 +482,8 @@ block_metrics_mmx2(unsigned char *a, unsigned char *b, int as, int bs,
     mp_msg(MSGT_VFILTER, MSGL_FATAL, "block_metrics_mmx2: internal error\n");
 #else
     static const unsigned long long ones = 0x0101010101010101ull;
-    x86_reg interlaced;
-    x86_reg prefetch_line = (((long)a>>3) & 7) + 10;
+    x86_ptr interlaced;
+    x86_ptr prefetch_line = (((long)a>>3) & 7) + 10;
 #ifdef DEBUG
     struct frame_stats ts = *s;
 #endif
@@ -604,14 +604,14 @@ block_metrics_mmx2(unsigned char *a, unsigned char *b, int as, int bs,
 }
 
 static inline int
-dint_copy_line_mmx2(unsigned char *dst, unsigned char *a, long bos,
-                    long cos, int ds, int ss, int w, int t)
+dint_copy_line_mmx2(unsigned char *dst, unsigned char *a, int64_t bos,
+                    int64_t cos, int ds, int ss, int w, int t)
 {
 #if !HAVE_MMX
     mp_msg(MSGT_VFILTER, MSGL_FATAL, "dint_copy_line_mmx2: internal error\n");
     return 0;
 #else
-    unsigned long len = (w+7) >> 3;
+    uint64_t len = (w+7) >> 3;
     int ret;
     __asm__ volatile (
         "pxor %%mm6, %%mm6 \n\t"       /* deinterlaced pixel counter */
@@ -649,7 +649,7 @@ dint_copy_line_mmx2(unsigned char *dst, unsigned char *a, long bos,
             "por %%mm3, %%mm1 \n\t"     /* avg if >= threshold */
             "movq %%mm1, (%2,%4) \n\t"
             : /* no output */
-            : "r" (a), "r" ((x86_reg)bos), "r" ((x86_reg)dst), "r" ((x86_reg)ss), "r" ((x86_reg)ds), "r" ((x86_reg)cos)
+            : "r" (a), "r" ((x86_ptr)bos), "r" ((x86_ptr)dst), "r" ((x86_ptr)ss), "r" ((x86_ptr)ds), "r" ((x86_ptr)cos)
             );
         a += 8;
         dst += 8;
@@ -666,10 +666,10 @@ dint_copy_line_mmx2(unsigned char *dst, unsigned char *a, long bos,
 }
 
 static inline int
-dint_copy_line(unsigned char *dst, unsigned char *a, long bos,
-               long cos, int ds, int ss, int w, int t)
+dint_copy_line(unsigned char *dst, unsigned char *a, int64_t bos,
+               int64_t cos, int ds, int ss, int w, int t)
 {
-    unsigned long len = ((unsigned long)w+sizeof(cmmx_t)-1) / sizeof(cmmx_t);
+    uint64_t len = ((unsigned long)w+sizeof(cmmx_t)-1) / sizeof(cmmx_t);
     cmmx_t dint_count = 0;
     cmmx_t thr;
     t |= t <<  8;

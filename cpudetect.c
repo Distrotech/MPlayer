@@ -230,7 +230,7 @@ static void check_os_katmai_support( void )
 static int has_cpuid(void)
 {
 // code from libavcodec:
-#if ARCH_X86_64
+#if ARCH_X86_64 || defined(__ILP32__)
    return 1;
 #else
    long a, c;

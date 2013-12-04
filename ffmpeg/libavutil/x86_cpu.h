@@ -24,7 +24,7 @@
 #include <stdint.h>
 #include "config.h"
 
-#if ARCH_X86_64
+#if ARCH_X86_64 || defined(__ILP32__)
 #    define OPSIZE "q"
 #    define REG_a "rax"
 #    define REG_b "rbx"
@@ -32,17 +32,21 @@
 #    define REG_d "rdx"
 #    define REG_D "rdi"
 #    define REG_S "rsi"
-#    define PTR_SIZE "8"
+#if defined(__ILP32__)
+typedef int32_t x86_ptr;
+#else
+typedef int64_t x86_ptr;
+#endif
+#    define PTR_SIZE LP_SIZE
 typedef int64_t x86_reg;
-
 #    define REG_SP "rsp"
 #    define REG_BP "rbp"
-#    define REGBP   rbp
-#    define REGa    rax
-#    define REGb    rbx
-#    define REGc    rcx
-#    define REGd    rdx
-#    define REGSP   rsp
+#    define REGBP   RBP_LP
+#    define REGa    RAX_LP
+#    define REGb    RBX_LP
+#    define REGc    RCX_LP
+#    define REGd    RDX_LP
+#    define REGSP   RSP_LP
 
 #elif ARCH_X86_32
 
@@ -55,6 +59,7 @@ typedef int64_t x86_reg;
 #    define REG_S "esi"
 #    define PTR_SIZE "4"
 typedef int32_t x86_reg;
+typedef int32_t x86_ptr;
 
 #    define REG_SP "esp"
 #    define REG_BP "ebp"
