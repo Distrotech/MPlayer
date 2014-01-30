@@ -4932,8 +4932,8 @@ fi
 
 if test "$_gif" = auto ; then
   _gif=no
-  for ld_gif in "-lungif" "-lgif" ; do
-    statement_check gif_lib.h 'QuantizeBuffer(0, 0, 0, 0, 0, 0, 0, 0)' $ld_gif && _gif=yes && break
+  for ld_gif in "-lungif"; do
+    statement_check ungif/gif_lib.h 'QuantizeBuffer(0, 0, 0, 0, 0, 0, 0, 0)' $ld_gif && _gif=yes && break
   done
 fi
 
@@ -4963,7 +4963,7 @@ if test "$_gif" = yes ; then
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <gif_lib.h>
+#include <ungif/gif_lib.h>
 static void catch(int sig) { exit(1); }
 int main(void) {
   signal(SIGSEGV, catch);  // catch segfault
@@ -4991,7 +4991,7 @@ case "$_gif" in yes*)
 
   cat > $TMPC << EOF
 #include <stdio.h>
-#include <gif_lib.h>
+#include <ungif/gif_lib.h>
 int main(void) {
   GifFileType gif = {.UserData = NULL};
   printf("UserData is at address %p\n", gif.UserData);

@@ -44,7 +44,7 @@
  * entire argument being interpretted as the filename.
  */
 
-#include <gif_lib.h>
+#include <ungif/gif_lib.h>
 
 #include <stdio.h>
 #include <stdlib.h>

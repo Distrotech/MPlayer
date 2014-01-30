@@ -32,7 +32,7 @@
 #include "demuxer.h"
 #include "stheader.h"
 
-#include <gif_lib.h>
+#include <ungif/gif_lib.h>
 #include "libvo/fastmemcpy.h"
 typedef struct {
   int current_pts;
